@@ -7,10 +7,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import io.sentry.Sentry;
 import lombok.RequiredArgsConstructor;
+import shop.mtcoding.securityapp.dto.ResponseDTO;
+import shop.mtcoding.securityapp.dto.UserRequest;
+import shop.mtcoding.securityapp.dto.UserResponse;
+import shop.mtcoding.securityapp.service.UserService;
 
 @Controller
 @RequiredArgsConstructor
 public class HelloController {
+
+    private final UserService userService;
 
     @GetMapping("/")
     public ResponseEntity<?> hello() {
@@ -27,10 +33,13 @@ public class HelloController {
         return "joinForm";
     }
 
-    @PostMapping("/join")
-    public String join(){
-        return "redirect:/";
-    }
+    // @PostMapping("/join")
+    // public ResponseEntity<?> join(UserRequest.JoinDTO joinDTO){
+    //     // open in view false 일때 여기서 select 가능
+    //     UserResponse.JoinDTO data = userService.회원가입(joinDTO);
+    //     ResponseDTO<?> responseDTO = new ResponseDTO<>().data(data);
+    //     return ResponseEntity.ok().body(responseDTO);
+    // }
 
     @GetMapping("/users/1")
     public ResponseEntity<?> hello1() {
@@ -48,7 +57,7 @@ public class HelloController {
      * Bean 메서드에 @SentrySpan주석을 추가합니다.
      */
     
-    @GetMapping("/sentri")
+    @GetMapping("/sentry")
     public void sentri() {
         try {
             throw new Exception("This is a test.");

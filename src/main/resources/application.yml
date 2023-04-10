@@ -3,6 +3,7 @@ sentry:
   # Set traces-sample-rate to 1.0 to capture 100% of transactions for performance monitoring.
   # We recommend adjusting this value in production.
   traces-sample-rate: 1.0
+  
 server:
   servlet:
     encoding:
@@ -19,6 +20,7 @@ spring:
     console:
       enabled: true
   jpa:
+    open-in-view: true # jpa를 공부하려면 true + DTO 사용하지 않아야 한다.
     hibernate:
       ddl-auto: create
     show-sql: true
