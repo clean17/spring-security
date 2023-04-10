@@ -1,14 +1,23 @@
 package shop.mtcoding.securityapp.config;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+    // 단방향 암호화
+    // Configuration + Bean -> IoC 에 생성
+    @Bean
+    BCryptPasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
+    
     // 시큐리티 설정을 비활성화 하기 위한 세팅 - 커스텀
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // CSRF 토큰을 숨겨두어서 보안검사
