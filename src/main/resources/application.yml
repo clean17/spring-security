@@ -1,0 +1,39 @@
+sentry:
+  dsn: https://56ab2b3b2d344c9cac66ca3d3fa4efe1@o4504986976124928.ingest.sentry.io/4504986986217472
+  # Set traces-sample-rate to 1.0 to capture 100% of transactions for performance monitoring.
+  # We recommend adjusting this value in production.
+  traces-sample-rate: 1.0
+server:
+  servlet:
+    encoding:
+      charset: utf-8
+      force: true
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:test;MODE=MySQL
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+      default_batch_fetch_size: 100 # in query 자동 작성
+  output:
+    ansi:
+      enabled: always
+  security:
+    user:
+      name: ssar
+      password: 1234 # 패스워드 간단하게 변경
+logging:
+  level:
+    '[shop.mtcoding.securityapp]': DEBUG # DEBUG 레벨부터 에러 확인할 수 있게 설정하기
+    '[org.hibernate.type]': TRACE # 콘솔 쿼리에 ? 에 주입된 값 보기
