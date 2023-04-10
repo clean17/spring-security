@@ -26,7 +26,7 @@ public class User {
     private String password;
     private String email;
     private String role; //USER, MANAGER, ADMIN
-    private boolean status;
+    private Boolean status;
 
     @Builder
     public User(Long id, String username, String password, String email, String role, boolean status,

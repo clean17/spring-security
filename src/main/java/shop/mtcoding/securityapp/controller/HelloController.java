@@ -33,13 +33,13 @@ public class HelloController {
         return "joinForm";
     }
 
-    // @PostMapping("/join")
-    // public ResponseEntity<?> join(UserRequest.JoinDTO joinDTO){
-    //     // open in view false 일때 여기서 select 가능
-    //     UserResponse.JoinDTO data = userService.회원가입(joinDTO);
-    //     ResponseDTO<?> responseDTO = new ResponseDTO<>().data(data);
-    //     return ResponseEntity.ok().body(responseDTO);
-    // }
+    @PostMapping("/join")
+    public ResponseEntity<?> join(UserRequest.JoinDTO joinDTO){
+        // open in view false 일때 여기서 select 가능
+        UserResponse.JoinDTO data = userService.회원가입(joinDTO);
+        ResponseDTO<?> responseDTO = new ResponseDTO<>().data(data);
+        return ResponseEntity.ok().body(responseDTO);
+    }
 
     @GetMapping("/users/1")
     public ResponseEntity<?> hello1() {
