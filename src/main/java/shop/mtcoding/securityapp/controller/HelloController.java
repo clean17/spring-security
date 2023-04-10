@@ -18,6 +18,18 @@ public class HelloController {
         return ResponseEntity.ok().body("ok");
     }
 
+    @GetMapping("/2")
+    public ResponseEntity<?> hello2() {
+
+        return ResponseEntity.ok().body("ok");
+    }
+
+    @GetMapping("/users/1")
+    public ResponseEntity<?> hello1() {
+
+        return ResponseEntity.ok().body("ok");
+    }
+
     /*
      * Sentry를 처음 사용하는 경우 이메일 알림을 사용하여 계정에 액세스하고 제품 둘러보기를 완료하십시오.
      * 

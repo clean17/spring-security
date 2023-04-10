@@ -25,7 +25,21 @@ public class User {
     private String username;
     private String password;
     private String email;
+    private String role; //USER, MANAGER, ADMIN
     private boolean status;
+
+    @Builder
+    public User(Long id, String username, String password, String email, String role, boolean status,
+            LocalDateTime createdAt, LocalDateTime updateAt) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.role = role;
+        this.status = status;
+        this.createdAt = createdAt;
+        this.updateAt = updateAt;
+    }
 
     private LocalDateTime createdAt; // db에는 timestamp로 변경되어 들어감
     private LocalDateTime updateAt;
@@ -38,17 +52,5 @@ public class User {
     @PreUpdate // update시 동작 
     public void onUpdate(){
         this.updateAt = LocalDateTime.now();
-    }
-
-    @Builder
-    public User(Long id, String username, String password, String email, boolean status, LocalDateTime createdAt,
-            LocalDateTime updateAt) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.status = status;
-        this.createdAt = createdAt;
-        this.updateAt = updateAt;
     }
 }
