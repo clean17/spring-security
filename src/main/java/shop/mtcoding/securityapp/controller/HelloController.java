@@ -1,33 +1,41 @@
 package shop.mtcoding.securityapp.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
-import java.lang.Exception;
-import io.sentry.Sentry;
+import org.springframework.web.bind.annotation.PostMapping;
 
+import io.sentry.Sentry;
 import lombok.RequiredArgsConstructor;
 
-@RestController
+@Controller
 @RequiredArgsConstructor
 public class HelloController {
 
     @GetMapping("/")
     public ResponseEntity<?> hello() {
-
         return ResponseEntity.ok().body("ok");
     }
 
-    @GetMapping("/2")
-    public ResponseEntity<?> hello2() {
+    @GetMapping("/loginForm")
+    public String loginForm() {
+        return "loginForm";
+    }
 
-        return ResponseEntity.ok().body("ok");
+    @GetMapping("/joinForm")
+    public String joinForm() {
+        return "joinForm";
+    }
+
+    @PostMapping("/join")
+    public String join(){
+        return "redirect:/";
     }
 
     @GetMapping("/users/1")
     public ResponseEntity<?> hello1() {
 
-        return ResponseEntity.ok().body("ok");
+        return ResponseEntity.ok().body("ok1111");
     }
 
     /*

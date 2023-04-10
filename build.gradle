@@ -30,6 +30,7 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 	implementation 'io.sentry:sentry-spring-boot-starter:6.17.0'
 	implementation 'io.sentry:sentry-logback:6.17.0'
+	implementation 'org.springframework.boot:spring-boot-starter-mustache'
 }
 
 tasks.named('test') {

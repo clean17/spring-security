@@ -17,6 +17,8 @@ public class SecurityConfig {
 
         http.formLogin()
                 .loginPage("/loginForm")
+                .usernameParameter("username")
+                .passwordParameter("password")
                 .loginProcessingUrl("/login") // 로그인 양식 데이터를 제출해야 하는 URL - post
                 .defaultSuccessUrl("/") // 인증 성공후 리다이렉션되는 주소
                  // .defaultSuccessUrl("/", true); // 상관없이 강제 리다이렉션

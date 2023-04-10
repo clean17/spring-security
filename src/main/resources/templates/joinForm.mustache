@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입 폼</title>
+</head>
+<body>
+    <form action="/join" method="post">
+        <input type="text" name="username" placeholder="Enter username">
+        <input type="password" name="password" placeholder="Enter password">
+        <input type="email" name="email" placeholder="Enter email">
+        <section>
+            <option value="USER">유저 권한</option>
+            <option value="MANAGER">매니저 권한</option>
+            <option value="ADMIN">관리자 권한</option>
+        </section>
+        <button>회원가입</button>
+    </form>
+</body>
+</html>
