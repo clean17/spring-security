@@ -1,7 +1,5 @@
 package shop.mtcoding.securityapp.controller;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -28,14 +26,13 @@ public class HelloController {
 
     private final UserService userService;
 
-    // @Value("${meta.name}")
-    // private String name;
-  
-    //     @GetMapping("/")
-    // public ResponseEntity<?> hello() {
-    //     return ResponseEntity.ok().body(name);
-    // }
+    @Value("${meta.name}")
+    private String name;
 
+    @GetMapping("/")
+    public ResponseEntity<?> hello() {
+        return ResponseEntity.ok().body(name);
+    }
 
     @GetMapping("/loginForm")
     public String loginForm() {

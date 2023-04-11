@@ -44,6 +44,7 @@ public class SecurityConfig {
         }
     }
 
+    // 시큐리티는 인증이 필요하면 인증페이지로 리다이렉션 해주면서 이전 페이지 정보를 기억하고 있다가 다시 연결해준다.
     // 시큐리티 설정을 비활성화 하기 위한 세팅 - 커스텀
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -93,7 +94,6 @@ public class SecurityConfig {
             log.warn("워닝 : 인증 실패  :  "+ authException.getMessage());
             log.error("에러 : 인증 실패  :  "+ authException.getMessage());
         });
-
         // 10. 권한 실패 처리
         http.exceptionHandling().accessDeniedHandler((request, response, accessDeniedException) -> {
             // checkpoint -> 예외핸들러 처리
@@ -102,6 +102,15 @@ public class SecurityConfig {
             log.warn("워닝 : 권한 실패  :  "+ accessDeniedException.getMessage());
             log.error("에러 : 권한 실패  :  "+ accessDeniedException.getMessage());
         });
+
+        // 인증, 권한 필터 설정 ( 스프링 문서 참고 )
+        http.authorizeRequests((authorize)->{
+            authorize.antMatchers("/users/**").authenticated()
+            .antMatchers("/manager/**").access("hasRole('ADMIN') or hasRole('MANAGER')")
+            .antMatchers("/admin/**").hasRole("ADMIN")
+            .anyRequest().permitAll(); // /users 는 인증이 필요 나머지는 허용
+        });
+
 
         // // Form 로그인 설정
         // http.formLogin()
@@ -118,27 +127,16 @@ public class SecurityConfig {
         //         .failureHandler((req, resp, exception) -> {
         //             System.out.println("디버그 : 로그인 실패 -> " + exception.getMessage());
         //         }); // 에러 로그
-
-        // 11 .인증, 권한 필터 설정 ( 스프링 문서 참고 )
-        http.authorizeRequests((authorize) -> {
-            authorize.antMatchers("/ct/**").authenticated() //인증이 필요한곳
-                    .antMatchers("/host/**").access("hasRole('ADMIN') or hasRole('HOST')")
-                    .antMatchers("/admin/**").hasRole("ADMIN")
-                    .anyRequest().permitAll(); // /users 는 인증이 필요 나머지는 허용
-        });
-
         return http.build();
-
-
     }
 
-    // CORS
+    // CORS 
     public CorsConfigurationSource configurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*"); // GET, POST, PUT, DELETE (Javascript 요청 허용)
-        // 자바스크립트 요청만, * 로 해놓으면 안됨
-        // 서버 리소스에 액세스할 수 있는 원본(도메인)을 지정합니다.
+        // 자바스크립트 요청만, * 로 해놓으면 안돼 !!!!!!!!!!!
+        // 서버 리소스에 액세스할 수 있는 원본(도메인)을 지정합니다. 
         configuration.addAllowedOriginPattern("*"); // 모든 IP 주소 허용 (프론트 앤드 IP만 허용 react)
         configuration.setAllowCredentials(true); // 클라이언트에서 쿠키 요청 허용
         // 브라우저가 Authorization을 읽을 수 있게 허용하는 옵션
