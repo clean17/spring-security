@@ -11,13 +11,17 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import shop.mtcoding.securityapp.dto.UserRequest;
 import shop.mtcoding.securityapp.dto.UserResponse;
+<<<<<<< HEAD
 import shop.mtcoding.securityapp.jwt.MyJwtProvider;
+=======
+import shop.mtcoding.securityapp.dto.UserRequest.LoginDTO;
+>>>>>>> 14cec13 (세션 있을때 테스트하는 코드 잠깐 추가 master에서 테스트할것)
 import shop.mtcoding.securityapp.model.User;
 import shop.mtcoding.securityapp.model.UserRepository;
 
 @RequiredArgsConstructor
 @Service
-// @Transactional(readOnly = true)
+// @Transactional(Read = true)
 public class UserService {
 
     private final UserRepository userRepository;
@@ -40,6 +44,7 @@ public class UserService {
     }
 
     @Transactional
+<<<<<<< HEAD
     public String 로그인(UserRequest.LoginDTO loginDTO) {
         Optional<User> userOP = userRepository.findbyUsername(loginDTO.getUsername());
         if(userOP.isPresent()){
@@ -52,5 +57,9 @@ public class UserService {
         }else{
             throw new RuntimeException("존재하지않는 이메일입니다.");
         }
+=======
+    public void 로그인(LoginDTO loginDTO) {
+        
+>>>>>>> 14cec13 (세션 있을때 테스트하는 코드 잠깐 추가 master에서 테스트할것)
     }
 }
