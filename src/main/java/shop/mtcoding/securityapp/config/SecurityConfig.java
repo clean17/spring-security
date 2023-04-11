@@ -15,7 +15,9 @@ public class SecurityConfig {
     @Bean
     BCryptPasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
-    }
+    }   
+
+    // 시큐리티는 인증이 필요하면 인증페이지로 리다이렉션 해주면서 이전 페이지 정보를 기억하고 있다가 다시 연결해준다.
     
     // 시큐리티 설정을 비활성화 하기 위한 세팅 - 커스텀
     @Bean
