@@ -9,16 +9,22 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import lombok.extern.slf4j.Slf4j;
 <<<<<<< HEAD
+<<<<<<< HEAD
 import shop.mtcoding.securityapp.jwt.JwtAuthorizationFilter;
 
 =======
 >>>>>>> 14cec13 (세션 있을때 테스트하는 코드 잠깐 추가 master에서 테스트할것)
+=======
+import shop.mtcoding.securityapp.core.jwt.JwtAuthorizationFilter;
+>>>>>>> aae75bd (시큐리티 필터체인 공부중)
 
 @Slf4j
 @Configuration
@@ -51,6 +57,21 @@ public class SecurityConfig {
             super.configure(builder);
         }
     }
+
+
+    // JWT 필터 등록이 필요함
+    public class CustomSecurityFilterManager extends AbstractHttpConfigurer<CustomSecurityFilterManager, HttpSecurity> {
+        @Override
+        public void configure(HttpSecurity builder) throws Exception {
+            AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
+            // builder.addFilter(new JwtAuthenticationFilter(authenticationManager));
+            // builder.addFilter(new JwtAuthorizationFilter(authenticationManager));
+            builder.addFilterAt(new JwtAuthorizationFilter(authenticationManager), JwtAuthorizationFilter.class);
+            super.configure(builder);
+        }
+    }
+
+    
 
     // 시큐리티는 인증이 필요하면 인증페이지로 리다이렉션 해주면서 이전 페이지 정보를 기억하고 있다가 다시 연결해준다.
 <<<<<<< HEAD
@@ -113,14 +134,22 @@ public class SecurityConfig {
 
         // 6. http bagic 인증 해제 - 모든 페이지마다 로그인을 해야함.. 안전하지만 너무 불편하다
         // BasinAuthenticationFilter 해제 
-        http.httpBasic().disable();
+        // http.httpBasic().disable();
+
+        // 2가지 방법 disable 안하고 addFilterAt 사용해서 바꿔치는 방법도 있음
+        // disable 하고 다시 등록하는 방법도 있고
 
         // 7. xss - lucy 필터 ( 적용 하던가 )
 
         // 8 .커스텀 필터 적용 ( 시큐리티 필터 교환 )
+<<<<<<< HEAD
         // http.apply(null);
 >>>>>>> 14cec13 (세션 있을때 테스트하는 코드 잠깐 추가 master에서 테스트할것)
 
+=======
+        http.apply(new CustomSecurityFilterManager());
+        
+>>>>>>> aae75bd (시큐리티 필터체인 공부중)
         // 9. 인증 실패 처리
         http.exceptionHandling().authenticationEntryPoint((request, response, authException) -> {
             // config는 DS 보다 앞에 있기 때문에 익셉션 핸들러 사용 불가
@@ -129,6 +158,10 @@ public class SecurityConfig {
             log.info("인포 : 인증 실패  :  "+ authException.getMessage());
             log.warn("워닝 : 인증 실패  :  "+ authException.getMessage());
             log.error("에러 : 인증 실패  :  "+ authException.getMessage());
+
+            // response.setContentType("text/plain; charset=utf-8");
+            // response.setHeader(403);
+            // response.getWriter().
         });
 <<<<<<< HEAD
         // 10. 권한 실패 처리
@@ -147,10 +180,10 @@ public class SecurityConfig {
         // 10. 권한 실패 처리
         http.exceptionHandling().accessDeniedHandler((request, response, accessDeniedException) -> {
             // checkpoint -> 예외핸들러 처리
-            log.debug("디버그 : 인증 실패  :  "+ accessDeniedException.getMessage());
-            log.info("인포 : 인증 실패  :  "+ accessDeniedException.getMessage());
-            log.warn("워닝 : 인증 실패  :  "+ accessDeniedException.getMessage());
-            log.error("에러 : 인증 실패  :  "+ accessDeniedException.getMessage());
+            log.debug("디버그 : 권한 실패  :  "+ accessDeniedException.getMessage());
+            log.info("인포 : 권한 실패  :  "+ accessDeniedException.getMessage());
+            log.warn("워닝 : 권한 실패  :  "+ accessDeniedException.getMessage());
+            log.error("에러 : 권한 실패  :  "+ accessDeniedException.getMessage());
         });
 
         // // Form 로그인 설정
