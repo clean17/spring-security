@@ -9,13 +9,19 @@ import org.springframework.stereotype.Service;
 // import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import shop.mtcoding.securityapp.core.jwt.MyJwtProvider;
 import shop.mtcoding.securityapp.dto.UserRequest;
+<<<<<<< HEAD
 import shop.mtcoding.securityapp.dto.UserResponse;
 <<<<<<< HEAD
 import shop.mtcoding.securityapp.jwt.MyJwtProvider;
 =======
 import shop.mtcoding.securityapp.dto.UserRequest.LoginDTO;
 >>>>>>> 14cec13 (세션 있을때 테스트하는 코드 잠깐 추가 master에서 테스트할것)
+=======
+import shop.mtcoding.securityapp.dto.UserRequest.LoginDTO;
+import shop.mtcoding.securityapp.dto.UserResponse;
+>>>>>>> aae75bd (시큐리티 필터체인 공부중)
 import shop.mtcoding.securityapp.model.User;
 import shop.mtcoding.securityapp.model.UserRepository;
 
@@ -45,6 +51,7 @@ public class UserService {
 
     @Transactional
 <<<<<<< HEAD
+<<<<<<< HEAD
     public String 로그인(UserRequest.LoginDTO loginDTO) {
         Optional<User> userOP = userRepository.findbyUsername(loginDTO.getUsername());
         if(userOP.isPresent()){
@@ -61,5 +68,18 @@ public class UserService {
     public void 로그인(LoginDTO loginDTO) {
         
 >>>>>>> 14cec13 (세션 있을때 테스트하는 코드 잠깐 추가 master에서 테스트할것)
+=======
+    public String 로그인(LoginDTO loginDTO) {
+        Optional<User> userOP = userRepository.findbyUsername(loginDTO.getUsername());
+        if ( userOP.isPresent()){
+            User userPS = userOP.get();
+            if ( passwordEncoder.matches(loginDTO.getPassword(), userPS.getPassword())) {
+                return MyJwtProvider.create(userPS);
+            }
+            throw new RuntimeException("패스워드 틀렸어");
+        }else{
+            throw new RuntimeException("유저네임 없어");
+        }
+>>>>>>> aae75bd (시큐리티 필터체인 공부중)
     }
 }

@@ -18,7 +18,11 @@ import io.sentry.Sentry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import shop.mtcoding.securityapp.core.auth.MyUserDetails;
+<<<<<<< HEAD
 import shop.mtcoding.securityapp.core.exception.Exception400;
+=======
+import shop.mtcoding.securityapp.core.jwt.MyJwtProvider;
+>>>>>>> aae75bd (시큐리티 필터체인 공부중)
 import shop.mtcoding.securityapp.dto.ResponseDTO;
 import shop.mtcoding.securityapp.dto.UserRequest;
 import shop.mtcoding.securityapp.dto.UserResponse;
@@ -49,8 +53,10 @@ public class HelloController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserRequest.LoginDTO loginDTO) {
 
-        userService.로그인(loginDTO);
-        return ResponseEntity.ok().body("로그인완료");
+        String jwt = userService.로그인(loginDTO);
+        return ResponseEntity.ok()
+                .header(MyJwtProvider.HEADER, jwt)
+                .body("로그인완료");
     }
 
     @Value("${meta.name}")
@@ -59,37 +65,6 @@ public class HelloController {
     @GetMapping("/")
     public ResponseEntity<?> hello() {
 
-        // 세션 비교 하는 코드 - stateful 에서 테스트해볼것
-        // 방법 1 UserDetailsService 이용
-        // UserDetails, password, authories 를 가진 객체가 생성, 왜 ? Userdetailsservice를 통해서
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(
-                        "ssar",
-                        "1234"
-                );
-        // UserDetails, password, authories
-        Authentication authentication1 = authenticationManager.authenticate(authenticationToken);
-
-
-        // 방법 2 UserDetailsService를 호출하지 않을 경우
-        User user = userRepository.findbyUsername("username").get();
-        MyUserDetails myUserDetails = new MyUserDetails(user);
-        Authentication authentication2 =
-                new UsernamePasswordAuthenticationToken(
-                        myUserDetails,
-                        myUserDetails.getPassword(),
-                        myUserDetails.getAuthorities()
-                );
-        
-        SecurityContextHolder.getContext().setAuthentication(authentication1);
-        ////////////////////////////////////////////////
-
-        // authenticationManager 빈 등록 확인 
-        // if (authenticationManager == null) {
-        //     log.debug("객체 없어");
-        // } else {
-        //     log.debug("객체 있어");
-        // }
         return ResponseEntity.ok().body(name);
     }
 
@@ -132,9 +107,10 @@ public class HelloController {
     @GetMapping("/users/{id}")
     public ResponseEntity<?> userCheck(@PathVariable Long id, @AuthenticationPrincipal MyUserDetails myUserDetails) {
 
+        Long idx = myUserDetails.getUser().getId();
         String username = myUserDetails.getUsername();
         String role = myUserDetails.getUser().getRole();
-        return ResponseEntity.ok().body(username + " : " + role);
+        return ResponseEntity.ok().body(username +  "   " + idx +  " : " + role);
     }
 >>>>>>> 14cec13 (세션 있을때 테스트하는 코드 잠깐 추가 master에서 테스트할것)
 
@@ -175,3 +151,35 @@ public class HelloController {
         }
     }
 }
+
+// // 세션 비교 하는 코드 - stateful 에서 테스트해볼것
+// // 방법 1 UserDetailsService 이용
+// // UserDetails, password, authories 를 가진 객체가 생성, 왜 ? Userdetailsservice를 통해서
+// UsernamePasswordAuthenticationToken authenticationToken =
+// new UsernamePasswordAuthenticationToken(
+// "ssar",
+// "1234"
+// );
+// // UserDetails, password, authories
+// Authentication authentication1 =
+// authenticationManager.authenticate(authenticationToken);
+
+// // 방법 2 UserDetailsService를 호출하지 않을 경우
+// User user = userRepository.findbyUsername("username").get();
+// MyUserDetails myUserDetails = new MyUserDetails(user);
+// Authentication authentication2 =
+// new UsernamePasswordAuthenticationToken(
+// myUserDetails,
+// myUserDetails.getPassword(),
+// myUserDetails.getAuthorities()
+// );
+
+// SecurityContextHolder.getContext().setAuthentication(authentication1);
+// ////////////////////////////////////////////////
+
+// // authenticationManager 빈 등록 확인
+// // if (authenticationManager == null) {
+// // log.debug("객체 없어");
+// // } else {
+// // log.debug("객체 있어");
+// // }
