@@ -49,6 +49,9 @@ public class User {
         this.createdAt = LocalDateTime.now();
     }
 
+    // @PrePersist 주석이 달린 onCreate() 메서드는 엔터티가 지속되기 전에 호출되어 현재 타임스탬프로 createdAt 필드를 설정합니다. 
+    // 이 접근 방식은 사용 중인 특정 지속성 공급자에 관계없이 JPA와의 호환성을 보장
+
     @PreUpdate // update시 동작 
     public void onUpdate(){
         this.updateAt = LocalDateTime.now();
