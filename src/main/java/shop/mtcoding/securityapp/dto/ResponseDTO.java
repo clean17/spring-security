@@ -1,15 +1,16 @@
 package shop.mtcoding.securityapp.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class ResponseDTO<T> {
     private Integer status;
     private String msg;
     private T data;
-
 
     public ResponseDTO() {
         this.status = 200;
