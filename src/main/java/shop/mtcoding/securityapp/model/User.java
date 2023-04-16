@@ -1,6 +1,7 @@
 package shop.mtcoding.securityapp.model;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -55,5 +56,13 @@ public class User {
     @PreUpdate // update시 동작 
     public void onUpdate(){
         this.updateAt = LocalDateTime.now();
+    }
+
+    public Date getPasswordExpiration() {
+        return null;
+    }
+
+    public boolean isAccountNonLocked() {
+        return true;
     }
 }

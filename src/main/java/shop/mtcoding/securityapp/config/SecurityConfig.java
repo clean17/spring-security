@@ -7,7 +7,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
-// @EnableWebSecurity
 public class SecurityConfig {
 
     // 단방향 암호화

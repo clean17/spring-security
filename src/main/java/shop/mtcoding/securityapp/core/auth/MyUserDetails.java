@@ -1,21 +1,24 @@
 package shop.mtcoding.securityapp.core.auth;
 
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import lombok.Getter;
 import shop.mtcoding.securityapp.model.User;
 
 @Getter
-public class MyUserDetails implements UserDetails{
+public class MyUserDetails implements UserDetails {
 
     // 사용자 정보와 관련된 여러 정보들을 리턴하는 메소드들을 가진다.
     private User user;
 
-    
     public MyUserDetails(User user) {
         this.user = user;
     }
@@ -23,12 +26,13 @@ public class MyUserDetails implements UserDetails{
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(()-> "ROLE_"+user.getRole());
+        authorities.add(() -> "ROLE_" + user.getRole());
         return authorities;
     }
 
     @Override
-    // 토큰 기반 인증과 같은 사용자 지정 인증 방법을 사용하는 경우 암호가 필요하지 않을 수 있습니다. 이 경우 getPassword() 메서드는 null을 반환
+    // 토큰 기반 인증과 같은 사용자 지정 인증 방법을 사용하는 경우 암호가 필요하지 않을 수 있습니다. 이 경우 getPassword()
+    // 메서드는 null을 반환
     public String getPassword() {
         return user.getPassword();
     }
@@ -38,20 +42,36 @@ public class MyUserDetails implements UserDetails{
         return user.getUsername();
     }
 
-
-    // 아래의 옵션들로 Spring Security가 발생시킨다. false의 값들이 온다면 인증을 허용하지 않고 사용자는 권한을 얻지못해 엑세스를 못함
+    // 아래의 옵션들로 Spring Security가 발생시킨다. false의 값들이 온다면 인증을 허용하지 않고 사용자는 권한을 얻지못해
+    // 엑세스를 못함
     @Override
     public boolean isAccountNonExpired() {
-        return true;
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        Date expiration = claims.getExpiration();
+        return expiration.after(new Date());
+    }
+
+    private Key getSigningKey() {
+        return null;
+        // 키 생성 로직
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return user.isAccountNonLocked();
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
+        Date passwordExpiration = user.getPasswordExpiration();
+        if (passwordExpiration != null) {
+            return passwordExpiration.after(new Date());
+        }
         return true;
     }
 
@@ -61,5 +81,5 @@ public class MyUserDetails implements UserDetails{
     public boolean isEnabled() {
         return user.getStatus();
     }
-    
+
 }
