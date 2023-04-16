@@ -46,32 +46,34 @@ public class MyUserDetails implements UserDetails {
     // 엑세스를 못함
     @Override
     public boolean isAccountNonExpired() {
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(getSigningKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        // Claims claims = Jwts.parserBuilder()
+        //         .setSigningKey(getSigningKey())
+        //         .build()
+        //         .parseClaimsJws(token)
+        //         .getBody();
 
-        Date expiration = claims.getExpiration();
-        return expiration.after(new Date());
+        // Date expiration = claims.getExpiration();
+        // return expiration.after(new Date());
+        return true;
     }
 
-    private Key getSigningKey() {
-        return null;
-        // 키 생성 로직
-    }
+    // private Key getSigningKey() {
+    //     return null;
+    //     // 키 생성 로직
+    // }
 
     @Override
     public boolean isAccountNonLocked() {
-        return user.isAccountNonLocked();
+        // return user.isAccountNonLocked();
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        Date passwordExpiration = user.getPasswordExpiration();
-        if (passwordExpiration != null) {
-            return passwordExpiration.after(new Date());
-        }
+        // Date passwordExpiration = user.getPasswordExpiration();
+        // if (passwordExpiration != null) {
+        //     return passwordExpiration.after(new Date());
+        // }
         return true;
     }
 
