@@ -1,21 +1,16 @@
 package shop.mtcoding.securityapp.core.auth;
 
-import java.security.Key;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 import lombok.Getter;
 import shop.mtcoding.securityapp.model.User;
 
 @Getter
 public class MyUserDetails implements UserDetails {
-
     // 사용자 정보와 관련된 여러 정보들을 리턴하는 메소드들을 가진다.
     private User user;
 

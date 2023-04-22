@@ -1,5 +1,7 @@
 package shop.mtcoding.securityapp.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,20 +20,13 @@ import io.sentry.Sentry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import shop.mtcoding.securityapp.core.auth.MyUserDetails;
-<<<<<<< HEAD
 import shop.mtcoding.securityapp.core.exception.Exception400;
-=======
 import shop.mtcoding.securityapp.core.jwt.MyJwtProvider;
->>>>>>> aae75bd (시큐리티 필터체인 공부중)
 import shop.mtcoding.securityapp.dto.ResponseDTO;
 import shop.mtcoding.securityapp.dto.UserRequest;
 import shop.mtcoding.securityapp.dto.UserResponse;
-<<<<<<< HEAD
-import shop.mtcoding.securityapp.jwt.MyJwtProvider;
-=======
 import shop.mtcoding.securityapp.model.User;
 import shop.mtcoding.securityapp.model.UserRepository;
->>>>>>> 14cec13 (세션 있을때 테스트하는 코드 잠깐 추가 master에서 테스트할것)
 import shop.mtcoding.securityapp.service.UserService;
 
 /* 
@@ -53,10 +48,8 @@ public class HelloController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserRequest.LoginDTO loginDTO) {
 
-        String jwt = userService.로그인(loginDTO);
-        return ResponseEntity.ok()
-                .header(MyJwtProvider.HEADER, jwt)
-                .body("로그인완료");
+        userService.로그인(loginDTO);
+        return ResponseEntity.ok().body("로그인완료");
     }
 
     @Value("${meta.name}")
@@ -65,6 +58,37 @@ public class HelloController {
     @GetMapping("/")
     public ResponseEntity<?> hello() {
 
+        // 세션 비교 하는 코드 - stateful 에서 테스트해볼것
+        // 방법 1 UserDetailsService 이용
+        // UserDetails, password, authories 를 가진 객체가 생성, 왜 ? Userdetailsservice를 통해서
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(
+                        "ssar",
+                        "1234"
+                );
+        // UserDetails, password, authories
+        Authentication authentication1 = authenticationManager.authenticate(authenticationToken);
+
+
+        // 방법 2 UserDetailsService를 호출하지 않을 경우
+        User user = userRepository.findbyUsername("username").get();
+        MyUserDetails myUserDetails = new MyUserDetails(user);
+        Authentication authentication2 =
+                new UsernamePasswordAuthenticationToken(
+                        myUserDetails,
+                        myUserDetails.getPassword(),
+                        myUserDetails.getAuthorities()
+                );
+        
+        SecurityContextHolder.getContext().setAuthentication(authentication1);
+        ////////////////////////////////////////////////
+
+        // authenticationManager 빈 등록 확인 
+        // if (authenticationManager == null) {
+        //     log.debug("객체 없어");
+        // } else {
+        //     log.debug("객체 있어");
+        // }
         return ResponseEntity.ok().body(name);
     }
 
@@ -96,23 +120,14 @@ public class HelloController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
-<<<<<<< HEAD
-    // @GetMapping("/users/{id}")
-    // public ResponseEntity<?> userCheck(@PathVariable Long id, @AuthenticationPrincipal MyUserDetails myUserDetails) {
-    //     String username = myUserDetails.getUsername();
-    //     String role = myUserDetails.getUser().getRole();
-    //     return ResponseEntity.ok().body(username + " : "+ role);
-    // }
-=======
+
     @GetMapping("/users/{id}")
     public ResponseEntity<?> userCheck(@PathVariable Long id, @AuthenticationPrincipal MyUserDetails myUserDetails) {
 
-        Long idx = myUserDetails.getUser().getId();
         String username = myUserDetails.getUsername();
         String role = myUserDetails.getUser().getRole();
-        return ResponseEntity.ok().body(username +  "   " + idx +  " : " + role);
+        return ResponseEntity.ok().body(username + " : " + role);
     }
->>>>>>> 14cec13 (세션 있을때 테스트하는 코드 잠깐 추가 master에서 테스트할것)
 
     /*
      * Sentry를 처음 사용하는 경우 이메일 알림을 사용하여 계정에 액세스하고 제품 둘러보기를 완료하십시오.
@@ -123,25 +138,8 @@ public class HelloController {
      * 들어오는 각 Spring MVC HTTP 요청은 자동으로 트랜잭션으로 전환됩니다. Bean 메서드 실행 주위에 범위를 만들려면 다음과 같이
      * Bean 메서드에 @SentrySpan주석을 추가합니다.
      */
-<<<<<<< HEAD
-    @GetMapping("/ct/users/{id}") //인증 확인
-    public ResponseEntity<?> userCheck(@PathVariable Long id,
-            @AuthenticationPrincipal MyUserDetails myUserDetails ) {
-
-        Long principalId = myUserDetails.getUser().getId();
-        String role = myUserDetails.getUser().getRole();
-
-        if (principalId != id){
-            return ResponseEntity.badRequest().body("올바른 접근이 아닙니다. ");
-        }
-
-        return ResponseEntity.ok().body(principalId + " : " + role);
-    }
 
     
-=======
-
->>>>>>> 14cec13 (세션 있을때 테스트하는 코드 잠깐 추가 master에서 테스트할것)
     @GetMapping("/sentry")
     public void sentri() {
         try {
@@ -151,35 +149,3 @@ public class HelloController {
         }
     }
 }
-
-// // 세션 비교 하는 코드 - stateful 에서 테스트해볼것
-// // 방법 1 UserDetailsService 이용
-// // UserDetails, password, authories 를 가진 객체가 생성, 왜 ? Userdetailsservice를 통해서
-// UsernamePasswordAuthenticationToken authenticationToken =
-// new UsernamePasswordAuthenticationToken(
-// "ssar",
-// "1234"
-// );
-// // UserDetails, password, authories
-// Authentication authentication1 =
-// authenticationManager.authenticate(authenticationToken);
-
-// // 방법 2 UserDetailsService를 호출하지 않을 경우
-// User user = userRepository.findbyUsername("username").get();
-// MyUserDetails myUserDetails = new MyUserDetails(user);
-// Authentication authentication2 =
-// new UsernamePasswordAuthenticationToken(
-// myUserDetails,
-// myUserDetails.getPassword(),
-// myUserDetails.getAuthorities()
-// );
-
-// SecurityContextHolder.getContext().setAuthentication(authentication1);
-// ////////////////////////////////////////////////
-
-// // authenticationManager 빈 등록 확인
-// // if (authenticationManager == null) {
-// // log.debug("객체 없어");
-// // } else {
-// // log.debug("객체 있어");
-// // }
