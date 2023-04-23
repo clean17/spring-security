@@ -34,7 +34,6 @@ public class UserRequest {
         @NotEmpty(message = "E-mail을 입력해주세요.")
         private String email;
         @NotEmpty(message = "Password를 입력해주세요.")
-
         private String password;
     }
 }

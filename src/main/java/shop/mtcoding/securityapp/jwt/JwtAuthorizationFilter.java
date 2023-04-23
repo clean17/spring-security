@@ -12,6 +12,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
@@ -24,14 +25,21 @@ import shop.mtcoding.securityapp.model.User;
 // 모든 주소에서 발동
 
 @Slf4j
-public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
+public class JwtAuthorizationFilter extends OncePerRequestFilter {
+
+    // public JwtAuthorizationFilter(AuthenticationManager authenticationManager) {
+    // super(authenticationManager);
+    // }
+
+    private final AuthenticationManager authenticationManager;
 
     public JwtAuthorizationFilter(AuthenticationManager authenticationManager) {
-        super(authenticationManager);
+        this.authenticationManager = authenticationManager;
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
         String prefixJwt = request.getHeader(MyJwtProvider.HEADER);
 
         if (prefixJwt == null) {
@@ -47,12 +55,10 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
             User user = User.builder().id(id).role(role).build();
             MyUserDetails myUserDetails = new MyUserDetails(user);
-            Authentication authentication =
-                    new UsernamePasswordAuthenticationToken(
-                            myUserDetails,
-                            myUserDetails.getPassword(),
-                            myUserDetails.getAuthorities()
-                    );
+            Authentication authentication = new UsernamePasswordAuthenticationToken(
+                    myUserDetails,
+                    myUserDetails.getPassword(),
+                    myUserDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (SignatureVerificationException sve) {
             log.error("토큰 검증 실패");
