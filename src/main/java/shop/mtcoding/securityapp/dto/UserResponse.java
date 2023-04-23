@@ -16,7 +16,6 @@ public class UserResponse {
         private String role;
         private String createdAt;
 
-
         public JoinDTO(User user) {
             this.id = user.getId();
             this.username = user.getUsername();

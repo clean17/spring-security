@@ -45,13 +45,6 @@ public class HelloController {
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody UserRequest.LoginDTO loginDTO) {
-
-        userService.로그인(loginDTO);
-        return ResponseEntity.ok().body("로그인완료");
-    }
-
     @Value("${meta.name}")
     private String name;
 
@@ -113,7 +106,7 @@ public class HelloController {
     }
 
     @PostMapping("/join")
-    public ResponseEntity<?> join(UserRequest.JoinDTO joinDTO) {
+    public ResponseEntity<?> join(@RequestBody @Valid UserRequest.JoinDTO joinDTO) {
         // open in view false 일때 여기서 select 가능
         UserResponse.JoinDTO data = userService.회원가입(joinDTO);
         ResponseDTO<?> responseDTO = new ResponseDTO<>().data(data);

@@ -26,8 +26,10 @@ public class SecurityConfig {
     BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+    // Configuration이 먼저 로딩 되므로 Bean이 만들어지지 않음 !! IoC 가 비었어 !!
+    // private final AuthenticationManager authenticationManager;
 
-
+    // AuthenticationConfiguration 객체를 이용해서 AuthenticationManager 를 생성 후 Bean 등록
     @Bean
     AuthenticationManager authenticationManager(
         AuthenticationConfiguration authenticationConfiguration) throws Exception {
@@ -39,8 +41,6 @@ public class SecurityConfig {
         @Override
         public void configure(HttpSecurity builder) throws Exception {
             AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
-            // builder.addFilter(new JwtAuthenticationFilter(authenticationManager));
-            // builder.addFilter(new JwtAuthorizationFilter(authenticationManager));
             builder.addFilterAt(new JwtAuthorizationFilter(authenticationManager), JwtAuthorizationFilter.class);
             super.configure(builder);
         }
@@ -64,15 +64,7 @@ public class SecurityConfig {
         // 4. JSESSIONID 응답 x
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         /*
-         * 또는
-         * spring:
-         *   security:
-         *     session:
-         *       creation-policy: stateless
-         */
-
-        /*
-         * 또는
+         * 또는 yml 설정
          * spring:
          *   security:
          *     session:
@@ -96,13 +88,12 @@ public class SecurityConfig {
         // 9. 인증 실패 처리
         http.exceptionHandling().authenticationEntryPoint((request, response, authException) -> {
             // config는 DS 보다 앞에 있기 때문에 익셉션 핸들러 사용 불가
-            // checkpoint -> 예외핸들러 처리
+            // 이벤트 발생 -> checkpoint -> 예외핸들러 처리
             log.debug("디버그 : 인증 실패  :  "+ authException.getMessage());
             log.info("인포 : 인증 실패  :  "+ authException.getMessage());
             log.warn("워닝 : 인증 실패  :  "+ authException.getMessage());
             log.error("에러 : 인증 실패  :  "+ authException.getMessage());
         });
-
 
         // 10. 권한 실패 처리
         http.exceptionHandling().accessDeniedHandler((request, response, accessDeniedException) -> {
@@ -136,28 +127,8 @@ public class SecurityConfig {
                     .antMatchers("/admin/**").hasRole("ADMIN")
                     .anyRequest().permitAll(); // /users 는 인증이 필요 나머지는 허용
         });
-
-
-        // // Form 로그인 설정
-        // http.formLogin()
-        //         .loginPage("/loginForm")
-        //         .usernameParameter("username")
-        //         .passwordParameter("password")
-        //         .loginProcessingUrl("/login") // 로그인 양식 데이터를 제출해야 하는 URL - post
-        //         // .defaultSuccessUrl("/") // 인증 성공후 리다이렉션되는 주소
-        //         // .defaultSuccessUrl("/", true); // 상관없이 강제 리다이렉션
-        //         .successHandler((req, resp, authentication) -> {
-        //             System.out.println("디버그 : 로그인이 완료되었습니다.");
-        //             resp.sendRedirect("/");
-        //         }) // 로그 기록
-        //         .failureHandler((req, resp, exception) -> {
-        //             System.out.println("디버그 : 로그인 실패 -> " + exception.getMessage());
-        //         }); // 에러 로그
         return http.build();
     }
-
-    // CORS 
-
     public CorsConfigurationSource configurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedHeader("*");
